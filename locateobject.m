@@ -33,14 +33,15 @@ pline_y = 0;
 if ( count_m > 1 || count_n > 1)
     disp('Model not in image.')   
 else
-    x = (n - delta_w/2);
-    y = (m - delta_h/2);
-
     % create circle for image
     [h, w, d] = size(image_img);
     [h1, w1] = size(points);
     delta_h = abs(h1 - h);
     delta_w = abs(w1 - w);
+    
+    x = (n - delta_w/2);
+    y = (m - delta_h/2);
+    
     figure(2), hold;
     theta = 0 : (2 * pi /10000) : (2 * pi);
     pline_x = radius * cos(theta) + x;
