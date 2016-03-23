@@ -1,8 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% Swains et al. Color Histogram Part 1
 
-model_img = imread('SwainDatabase\swain_database\chickensoupnoodles.sqr.128.bmp');
-imshow(model_img)
+model_img = imread('SwainDatabase\swain_database\garan.sqr.128.bmp');
+figure(1), imshow(model_img)
 
 model = double(model_img);
 M_histo = zeros(16, 16, 16);
@@ -31,7 +31,7 @@ end
 %% Build Histogram for Image
 I_histo = zeros(16, 16, 16);
 image_img = imread('SwainDatabase\SwainCollageForBackprojectionTesting.bmp');
-imshow(image_img)
+figure(2), imshow(image_img)
 
 image = double(image);
 [h, w, d] = size(image);
@@ -112,7 +112,6 @@ figure(2), imshow(image_img)
 radius = floor(sqrt((cx - px)^2 + (cy - py)^2))/2;
 
 % Create circular mask
-radius = 50;
 ix = sqrt(2 * pi * radius^2);
 cx = ix/2;
 [X, Y] = meshgrid(-(cx-1):(ix-cx), -(cx-1):(ix-cx));
@@ -125,20 +124,41 @@ C_img = conv2(BP_image, mask);
 MAX_val =max(max(C_img));
 C_norm = C_img/MAX_val;
 figure(3),imshow(C_norm)
+figure(4),mesh(C_img)
 
 %% Find location
-th = MAX_val - 100;
+th = MAX_val - 500;
 th_index = find(C_img < th);
-C_img(th_index) = 0;
-figure(4), imshow(C_img)
+peaks = C_img;
+peaks(th_index) = 0;
+figure(5), imshow(peaks)
 
 % find points
-points = bwmorph(C_img, 'shrink', inf);
+points = bwmorph(peaks, 'shrink', inf);
 [m, n] = find(points == 1);
 
-disp('Location of object is:')
-disp([num2str(m), ' ', num2str(n)])
+[count_m, nn] = size(m);
+[count_n, nn] = size(n);
+if ( count_m > 1 || count_n > 1)
+    disp('Model not in image.')
+else
+    disp('Location of object is:')
+    disp([num2str(m), ' ', num2str(n)])
 
+    % draw circule on image
+    [h, w, d] = size(image_img);
+    [h1, w1] = size(points);
+    delta_h = abs(h1 - h);
+    delta_w = abs(w1 - w);
+    figure(2), hold;
+    theta = 0 : (2 * pi /10000) : (2 * pi);
+    pline_x = radius * cos(theta) + (n - delta_w/2);
+    pline_y = radius * sin(theta) + (m - delta_h/2);
+    hold on; 
+    plot(n - delta_w/2, m - delta_h/2, 'x', 'LineWidth', 3)
+    plot(pline_x, pline_y, 'LineWidth', 3)
+    hold off;
+end
 
 
 
