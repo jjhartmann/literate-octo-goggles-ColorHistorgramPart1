@@ -139,8 +139,12 @@ points = bwmorph(peaks, 'shrink', inf);
 
 [count_m, nn] = size(m);
 [count_n, nn] = size(n);
+x = 0;
+y = 0;
+pline_x = 0;
+pline_y = 0;
 if ( count_m > 1 || count_n > 1)
-    disp('Model not in image.')
+    disp('Model not in image.')   
 else
     x = (n - delta_w/2);
     y = (m - delta_h/2);
