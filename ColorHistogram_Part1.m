@@ -126,10 +126,21 @@ MAX_val =max(max(C_img));
 C_norm = C_img/MAX_val;
 figure(3),imshow(C_norm)
 
-% Find location
+%% Find location
 th = MAX_val - 100;
 th_index = find(C_img < th);
 C_img(th_index) = 0;
 figure(4), imshow(C_img)
+
+% find points
+points = bwmorph(C_img, 'shrink', inf);
+[m, n] = find(points == 1);
+
+disp('Location of object is:')
+disp([num2str(m), ' ', num2str(n)])
+
+
+
+
 
 
