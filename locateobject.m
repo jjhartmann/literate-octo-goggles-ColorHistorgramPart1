@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Function: Convolve the image and locate the object
-function [x, y, pline_x, pline_y] = locateobject(BP_image, radius)
+function [x, y, pline_x, pline_y] = locateobject(BP_image, image, radius)
 % Create circular mask
 ix = sqrt(2 * pi * radius^2);
 cx = ix/2;
@@ -15,14 +15,14 @@ MAX_val =max(max(C_img));
 C_norm = C_img/MAX_val;
 
 %% Find location
-th = MAX_val - 50;
+th = MAX_val - 5;
 th_index = find(C_img < th);
 peaks = C_img;
 peaks(th_index) = 0;
 
 % find points
 points = bwmorph(peaks, 'shrink', inf);
-[m, n] = find(points == 1);
+[m, n] = find(C_img == MAX_val);
 
 [count_m, nn] = size(m);
 [count_n, nn] = size(n);
@@ -34,7 +34,7 @@ if ( count_m > 1 || count_n > 1)
     disp('Model not in image.')   
 else
     % create circle for image
-    [h, w, d] = size(image_img);
+    [h, w, d] = size(image);
     [h1, w1] = size(points);
     delta_h = abs(h1 - h);
     delta_w = abs(w1 - w);
