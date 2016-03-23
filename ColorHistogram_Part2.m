@@ -6,7 +6,7 @@ load('CMPT412_blackcup.mat');
 load('CMPT412_bluecup.mat');
 
 % TODO: choose what video
-video = bluecup;
+video = blackcup;
 
 % Get box input 
 frame1 = video(:,:,:,1);
@@ -40,6 +40,7 @@ for frame_index = 1:f
     figure(1),imshow(frame),hold on
     plot(x, y, 'x', 'LineWidth', 3)
     plot(pline_x, pline_y, 'LineWidth', 3)
+    drawnow;
     hold off
 
    % input('Hit Enter to continue');
