@@ -5,7 +5,7 @@ model_img = imread('SwainDatabase\swain_database\garan.sqr.128.bmp');
 figure(1), imshow(model_img)
 
 model = double(model_img);
-M_histo = zeros(16, 16, 16);
+M_histo = zeros(8, 8, 8);
 
 %% Build the histogram for model
 [h, w, d] = size(model);
@@ -18,9 +18,9 @@ for i = 1:h
        
        
        if ( red > th || grn > th || blu > th)
-           index1 = ceil(red/16);
-           index2 = ceil(grn/16);
-           index3 = ceil(blu/16);
+           index1 = ceil(red/32);
+           index2 = ceil(grn/32);
+           index3 = ceil(blu/32);
 
            val = M_histo(index1, index2, index3);
            M_histo(index1, index2, index3) = val + 1;
@@ -29,7 +29,7 @@ for i = 1:h
 end
 
 %% Build Histogram for Image
-I_histo = zeros(16, 16, 16);
+I_histo = zeros(8, 8, 8);
 image_img = imread('SwainDatabase\SwainCollageForBackprojectionTesting.bmp');
 figure(2), imshow(image_img)
 
@@ -44,9 +44,9 @@ for i = 1:h
        
        
        if ( red > th || grn > th || blu > th)
-           index1 = ceil(red/16);
-           index2 = ceil(grn/16);
-           index3 = ceil(blu/16);
+           index1 = ceil(red/32);
+           index2 = ceil(grn/32);
+           index3 = ceil(blu/32);
 
            val = I_histo(index1, index2, index3);
            I_histo(index1, index2, index3) = val + 1;
@@ -57,12 +57,12 @@ end
 
 
 %% Build Ratio histogram R
-R_histo = double(zeros(16, 16, 16));
+R_histo = double(zeros(8, 8, 8));
 
 % Iterate over I_histo and M_histo and get the ratio min(M/I, 1);
-for i = 1:16
-    for j = 1:16
-        for k = 1:16
+for i = 1:8
+    for j = 1:8
+        for k = 1:8
             M_val = M_histo(i, j, k);
             I_val = I_histo(i, j, k);
             
@@ -94,9 +94,9 @@ for i = 1:h
        grn = image(i, j, 2) + 1;
        blu = image(i, j, 3) + 1;
        
-       index1 = ceil(red/16);
-       index2 = ceil(grn/16);
-       index3 = ceil(blu/16);
+       index1 = ceil(red/32);
+       index2 = ceil(grn/32);
+       index3 = ceil(blu/32);
        
        R_val = R_histo(index1, index2, index3);
        BP_image(i, j) = R_val;
