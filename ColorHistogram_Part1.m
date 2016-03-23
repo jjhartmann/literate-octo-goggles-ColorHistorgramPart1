@@ -8,10 +8,10 @@ model = double(model);
 M_histo = zeros(16, 16, 16);
 
 %% Build the histogram for model
-[w, h, d] = size(model);
+[h, w, d] = size(model);
 th = 20;
-for i = 1:w
-   for j = 1:h
+for i = 1:h
+   for j = 1:w
        red = model(i, j, 1) + 1;
        grn = model(i, j, 2) + 1;
        blu = model(i, j, 3) + 1;
@@ -34,10 +34,10 @@ image = imread('SwainDatabase\SwainCollageForBackprojectionTesting.bmp');
 imshow(image)
 
 image = double(image);
-[w, h, d] = size(image);
+[h, w, d] = size(image);
 th = 20;
-for i = 1:w
-   for j = 1:h
+for i = 1:h
+   for j = 1:w
        red = image(i, j, 1) + 1;
        grn = image(i, j, 2) + 1;
        blu = image(i, j, 3) + 1;
@@ -81,5 +81,10 @@ for i = 1:16
         end
     end
 end
+
+
+%% Use the each pixel in the image-to-search as an index into the R_histo
+% replace pixel with ratio
+[h, w, d] = size(image);
 
 
