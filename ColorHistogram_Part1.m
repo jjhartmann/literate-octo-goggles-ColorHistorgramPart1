@@ -142,8 +142,10 @@ points = bwmorph(peaks, 'shrink', inf);
 if ( count_m > 1 || count_n > 1)
     disp('Model not in image.')
 else
+    x = (n - delta_w/2);
+    y = (m - delta_h/2);
     disp('Location of object is:')
-    disp([num2str(m), ' ', num2str(n)])
+    disp([num2str(x), ' ', num2str(y)])
 
     % draw circule on image
     [h, w, d] = size(image_img);
@@ -152,10 +154,10 @@ else
     delta_w = abs(w1 - w);
     figure(2), hold;
     theta = 0 : (2 * pi /10000) : (2 * pi);
-    pline_x = radius * cos(theta) + (n - delta_w/2);
-    pline_y = radius * sin(theta) + (m - delta_h/2);
+    pline_x = radius * cos(theta) + x;
+    pline_y = radius * sin(theta) + y;
     hold on; 
-    plot(n - delta_w/2, m - delta_h/2, 'x', 'LineWidth', 3)
+    plot(x, y, 'x', 'LineWidth', 3)
     plot(pline_x, pline_y, 'LineWidth', 3)
     hold off;
 end
