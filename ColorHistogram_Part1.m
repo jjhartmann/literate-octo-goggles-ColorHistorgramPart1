@@ -127,7 +127,7 @@ figure(3),imshow(C_norm)
 figure(4),mesh(C_img)
 
 %% Find location
-th = MAX_val - 500;
+th = MAX_val - 50;
 th_index = find(C_img < th);
 peaks = C_img;
 peaks(th_index) = 0;
