@@ -10,9 +10,9 @@ for i = 1:h
        grn = image(i, j, 2) + 1;
        blu = image(i, j, 3) + 1;
        
-       index1 = max(ceil(red/16), 1);
-       index2 = max(ceil(grn/16), 1);
-       index3 = max(ceil(blu/16), 1);
+       index1 = max(ceil(red/32), 1);
+       index2 = max(ceil(grn/32), 1);
+       index3 = max(ceil(blu/32), 1);
        
        R_val = R_histo(index1, index2, index3);
        BP_image(i, j) = R_val;
