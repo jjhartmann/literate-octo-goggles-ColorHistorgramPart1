@@ -21,27 +21,25 @@ model_img = imcrop(frame1, [bx by tx ty]);
 figure(2),imshow(model_img)
 
 %% Get Model Histogram
-M_histo = createcolourhistogram(model_img);
+M_histo = createcolourhistogram(model_img, 0);
 
 %% Iterate through video and track object
 [h, w, d, f] = size(video);
-radius = max(ty, tx)/2;
+radius = max(ty, tx)/2 + 20;
 for frame_index = 1:f
-    for i = 1:h
-        for j = 1:w 
-            frame = video(:,:,:,frame_index);
-            
-            I_histo = createcolourhistogram(frame);
-            R_histo = createratiohistogram(M_histo, I_histo);
-            BP_img = createbackprojectionimage(R_histo, frame);
-            [x, y, pline_x, pline_y] = locateobject(BP_img, radius);
-            
-            figure(1),imshow(frame),hold on
-            plot(x, y, 'x', 'LineWidth', 3)
-            plot(pline_x, pline_y, 'LineWidth', 3)
-            hold off
-            
-            input();
-        end
-    end
+
+    frame = video(:,:,:,frame_index);
+
+    I_histo = createcolourhistogram(frame, 0);
+    R_histo = createratiohistogram(M_histo, I_histo);
+    BP_img = createbackprojectionimage(R_histo, frame);
+    [x, y, pline_x, pline_y] = locateobject(BP_img, frame, radius);
+
+    figure(1),imshow(frame),hold on
+    plot(x, y, 'x', 'LineWidth', 3)
+    plot(pline_x, pline_y, 'LineWidth', 3)
+    hold off
+
+   % input('Hit Enter to continue');
+
 end
