@@ -33,7 +33,7 @@ I_histo = zeros(16, 16, 16);
 image_img = imread('SwainDatabase\SwainCollageForBackprojectionTesting.bmp');
 figure(2), imshow(image_img)
 
-image = double(image);
+image = double(image_img);
 [h, w, d] = size(image);
 th = 5;
 for i = 1:h
@@ -146,8 +146,6 @@ pline_y = 0;
 if ( count_m > 1 || count_n > 1)
     disp('Model not in image.')   
 else
-    x = (n - delta_w/2);
-    y = (m - delta_h/2);
     disp('Location of object is:')
     disp([num2str(x), ' ', num2str(y)])
 
@@ -156,6 +154,8 @@ else
     [h1, w1] = size(points);
     delta_h = abs(h1 - h);
     delta_w = abs(w1 - w);
+    x = (n - delta_w/2);
+    y = (m - delta_h/2);
     figure(2), hold;
     theta = 0 : (2 * pi /10000) : (2 * pi);
     pline_x = radius * cos(theta) + x;
