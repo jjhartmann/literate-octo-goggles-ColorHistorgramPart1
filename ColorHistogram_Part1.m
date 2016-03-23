@@ -29,3 +29,28 @@ for i = 1:w
 end
 
 %% Build Histogram for Image
+I_histo = zeros(16, 16, 16);
+image = imread('SwainDatabase\SwainCollageForBackprojectionTesting.bmp');
+imshow(image)
+
+image = double(image);
+[w, h, d] = size(image);
+th = 20;
+for i = 1:w
+   for j = 1:h
+       red = image(i, j, 1) + 1;
+       grn = image(i, j, 2) + 1;
+       blu = image(i, j, 3) + 1;
+       
+       
+       if ( red > th || grn > th || blu > th)
+           index1 = ceil(red/16);
+           index2 = ceil(grn/16);
+           index3 = ceil(blu/16);
+
+           val = M_histo(index1, index2, index3);
+           I_histo(index1, index2, index3) = val + 1;
+       end
+   end
+end
+
