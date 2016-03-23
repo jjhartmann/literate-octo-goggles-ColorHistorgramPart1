@@ -103,6 +103,33 @@ for i = 1:h
     end
 end
 
+%% Build mask
+figure(2), imshow(image_img)
+[cx, cy] = ginput(1);
+[px, py] = ginput(1);
 
+% Find the radius of circle
+radius = floor(sqrt((cx - px)^2 + (cy - py)^2))/2;
+
+% Create circular mask
+radius = 50;
+ix = sqrt(2 * pi * radius^2);
+cx = ix/2;
+[X, Y] = meshgrid(-(cx-1):(ix-cx), -(cx-1):(ix-cx));
+mask = double((X.^2 + Y.^2) <= radius^2);
+mask_index = find(mask <= 0);
+mask(mask_index) = 0;
+
+% Conv image with mask and display
+C_img = conv2(BP_image, mask);
+MAX_val =max(max(C_img));
+C_norm = C_img/MAX_val;
+figure(3),imshow(C_norm)
+
+% Find location
+th = MAX_val - 100;
+th_index = find(C_img < th);
+C_img(th_index) = 0;
+figure(4), imshow(C_img)
 
 
