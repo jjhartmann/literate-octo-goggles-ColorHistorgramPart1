@@ -1,12 +1,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Function to create a color histogram
-function histo = createcolourhistogram(image) 
+function histo = createcolourhistogram(image, th) 
 model = double(image);
 histo = zeros(16, 16, 16);
 
 %% Build the histogram for model
 [h, w, d] = size(model);
-th = 5;
 for i = 1:h
    for j = 1:w
        red = model(i, j, 1) + 1;
@@ -18,7 +17,10 @@ for i = 1:h
            index1 = ceil(red/16);
            index2 = ceil(grn/16);
            index3 = ceil(blu/16);
-
+%             index1 = ceil((abs(red - grn)+1)/16);
+%             index2 = ceil((abs((2*blu) - red - grn)+1)/32);
+%             index3 = ceil((abs(red + grn + blu)+1)/48);
+            
            val = histo(index1, index2, index3);
            histo(index1, index2, index3) = val + 1;
        end
