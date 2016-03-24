@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Function to create a color histogram
-function histo = createcolourhistogram(image, th) 
+function histo = createcolourhistogram(image, th_low, th_high) 
 model = double(image);
 histo = zeros(8, 8, 8);
 
@@ -14,7 +14,7 @@ for i = 1:h
        
        IL = red + grn + blu;
        
-       if (IL > th && IL < ((3 * 256)-th))
+       if (IL >= th_low && IL <= ((3 * 256)-th_high))
            index1 = ceil(red/32);
            index2 = ceil(grn/32);
            index3 = ceil(blu/32);
