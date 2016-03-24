@@ -2,12 +2,7 @@
 %%%% Function: Convolve the image and locate the object
 function [x, y, pline_x, pline_y] = locateobject(BP_image, image, radius, max_diff, prev_x, prev_y)
 % Create circular mask
-ix = sqrt(2 * pi * radius^2);
-cx = ix/2;
-[X, Y] = meshgrid(-(cx-1):(ix-cx), -(cx-1):(ix-cx));
-mask = double((X.^2 + Y.^2) <= radius^2);
-mask_index = find(mask <= 0);
-mask(mask_index) = 0;
+mask = createmask('normal' , radius, 2, 20);
 
 % Conv image with mask and display
 C_img = conv2(BP_image, mask);
