@@ -24,11 +24,9 @@ M_histo = createcolourhistogram(model_img, 0, 0);
 
 %% Iterate through video and track object
 [h, w, d, f] = size(video);
-radius = max(ty, tx)/2 + 20;
+radius =  30;
 x = bx + tx/2;
 y = by + ty/2;
-cx = x;
-cy = y;
 tx = tx + 50;
 ty = ty + 50;
 for frame_index = 1:f
@@ -40,34 +38,45 @@ for frame_index = 1:f
     R_histo = createratiohistogram(M_histo, I_histo);
     
     % Create window
-    window = imcrop(frame, [(x - tx/2) (y - ty/2) tx ty]);
-        
+    bx = (x - tx/2);
+    by = (y - ty/2);
+    window = imcrop(frame, [bx by tx ty]);
+    
     % Back project onto window
     BP_img = createbackprojectionimage(R_histo, window);
     
     % Create circular mask
-    mask = createmask('epanech' , radius, 2, 20);
+    mask = createmask('epanech' , radius, 1, 20);
 
     % Conv image with mask and display
     C_img = conv2(BP_img, mask);
     MAX_val =max(max(C_img));
     C_norm = C_img/MAX_val;
-
+    [h, w] = size(C_img);
+    [h1, w1, d] = size(window);
+    C_crop = imcrop(C_img, [(w - w1)/2, (h - h1)/2, w1, h1]); 
     % Create Threshold
     th = MAX_val - 0;
     
+    
     %% Conduct Mean Shift
     WRK_DONE = false;
-    epsilon = 2;
+    epsilon = 1;
     while (~WRK_DONE)
-        [deltax, deltay] = meanshift(BP_img, window, th);
+        % Call mean shift function: pass in Backprojected window and
+        % normalized x and y positions
+        [deltax, deltay] = meanshift(C_crop, ceil(x - bx), ceil(y - by));
         
-        WRK_DONE = ((deltax < epsilon) && (deltaY < epsilon)); 
+        WRK_DONE = ((deltax < epsilon) && (deltay < epsilon)); 
         x = x + deltax;
-        y = y + deltay;
+        y = y - deltay;
     end
     
     %% Print to figure
+    theta = 0 : (2 * pi /10000) : (2 * pi);
+    pline_x = radius * cos(theta) + x;
+    pline_y = radius * sin(theta) + y;
+    
     figure(1),imshow(frame),hold on
     plot(x, y, 'x', 'LineWidth', 3)
     plot(pline_x, pline_y, 'LineWidth', 3)
