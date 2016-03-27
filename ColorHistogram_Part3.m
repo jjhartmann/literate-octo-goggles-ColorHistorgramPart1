@@ -5,7 +5,7 @@ load('CMPT412_blackcup.mat');
 load('CMPT412_bluecup.mat');
 
 % TODO: choose what video
-video = blackcup;
+video = bluecup;
 
 % Get box input 
 frame1 = video(:,:,:,1);
@@ -24,23 +24,24 @@ M_histo = createcolourhistogram(model_img, 0, 0);
 
 %% Iterate through video and track object
 [h, w, d, f] = size(video);
-radius =  30;
+radius =  ceil(max(ty, tx)/2);
 x = bx + tx/2;
 y = by + ty/2;
-tx = tx + 50;
-ty = ty + 50;
+tx = tx + (4*radius);
+ty = ty + (4*radius);
 for frame_index = 1:f
     % Get frame form movie
     frame = video(:,:,:,frame_index);  
     
-    % Create colour histogram and backprojection
-    I_histo = createcolourhistogram(window, 0, 0);
-    R_histo = createratiohistogram(M_histo, I_histo);
-    
     % Create window
     bx = (x - tx/2);
     by = (y - ty/2);
+        
     window = imcrop(frame, [bx by tx ty]);
+    
+    % Create colour histogram and backprojection
+    I_histo = createcolourhistogram(window, 0, 0);
+    R_histo = createratiohistogram(M_histo, I_histo);
     
     % Back project onto window
     BP_img = createbackprojectionimage(R_histo, window);
@@ -62,16 +63,26 @@ for frame_index = 1:f
     %% Conduct Mean Shift
     WRK_DONE = false;
     epsilon = 1;
+    x_prime = ceil(x - abs(bx));
+    y_prime = ceil(y - abs(by));
+    figure(5), mesh(C_img)
+    figure(3),imshow(window), hold on
+    figure(4), imshow(C_crop/MAX_val), hold on
+    plot(x_prime, y_prime, 'x', 'LineWidth', 1)
     while (~WRK_DONE)
         % Call mean shift function: pass in Backprojected window and
         % normalized x and y positions
-        [deltax, deltay] = meanshift(C_crop, ceil(x - bx), ceil(y - by));
+        x_prime = ceil(x - abs(bx));
+        y_prime = ceil(y - abs(by));
+        [deltax, deltay] = meanshift(C_crop, x_prime, y_prime);
         
-        WRK_DONE = ((deltax < epsilon) && (deltay < epsilon)); 
-        x = x + deltax;
-        y = y - deltay;
+        WRK_DONE = ((abs(deltax) < epsilon) && (abs(deltay) < epsilon)); 
+        x = ceil(x + deltax);
+        y = ceil(y + deltay);
+        
+        plot(ceil(x - abs(bx)), ceil(y - abs(by)), 'x', 'LineWidth', 1)
     end
-    
+    hold off
     %% Print to figure
     theta = 0 : (2 * pi /10000) : (2 * pi);
     pline_x = radius * cos(theta) + x;
