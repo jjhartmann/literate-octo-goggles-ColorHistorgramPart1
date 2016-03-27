@@ -32,28 +32,42 @@ cy = y;
 tx = tx + 50;
 ty = ty + 50;
 for frame_index = 1:f
-
+    % Get frame form movie
     frame = video(:,:,:,frame_index);  
     
+    % Create colour histogram and backprojection
     I_histo = createcolourhistogram(window, 0, 0);
     R_histo = createratiohistogram(M_histo, I_histo);
     
+    % Create window
+    window = imcrop(frame, [(x - tx/2) (y - ty/2) tx ty]);
+        
+    % Back project onto window
+    BP_img = createbackprojectionimage(R_histo, window);
+    
+    % Create circular mask
+    mask = createmask('epanech' , radius, 2, 20);
+
+    % Conv image with mask and display
+    C_img = conv2(BP_img, mask);
+    MAX_val =max(max(C_img));
+    C_norm = C_img/MAX_val;
+
+    % Create Threshold
+    th = MAX_val - 0;
+    
+    %% Conduct Mean Shift
     WRK_DONE = false;
     epsilon = 2;
     while (~WRK_DONE)
-        % Create window
-        window = imcrop(frame, [(x - tx/2) (y - ty/2) tx ty]);
+        [deltax, deltay] = meanshift(BP_img, window, th);
         
-        % Back project onto window
-        BP_img = createbackprojectionimage(R_histo, window);
-        [cx, cy, pline_x, pline_y] = meanshift(BP_img, window, radius, 0, -1, -1);
-        
-        WRK_DONE = ((abs(x-cx) < epsilon) && (abs(y-cy) < epsilon)); 
-        x = cx;
-        y = cy;
+        WRK_DONE = ((deltax < epsilon) && (deltaY < epsilon)); 
+        x = x + deltax;
+        y = y + deltay;
     end
     
-
+    %% Print to figure
     figure(1),imshow(frame),hold on
     plot(x, y, 'x', 'LineWidth', 3)
     plot(pline_x, pline_y, 'LineWidth', 3)
