@@ -25,16 +25,34 @@ M_histo = createcolourhistogram(model_img, 0, 0);
 %% Iterate through video and track object
 [h, w, d, f] = size(video);
 radius = max(ty, tx)/2 + 20;
-x = bx;
-y = by;
+x = bx + tx/2;
+y = by + ty/2;
+cx = x;
+cy = y;
+tx = tx + 50;
+ty = ty + 50;
 for frame_index = 1:f
 
-    frame = video(:,:,:,frame_index);
-
-    I_histo = createcolourhistogram(frame, 0, 0);
+    frame = video(:,:,:,frame_index);  
+    
+    I_histo = createcolourhistogram(window, 0, 0);
     R_histo = createratiohistogram(M_histo, I_histo);
-    BP_img = createbackprojectionimage(R_histo, frame);
-    [x, y, pline_x, pline_y] = locateobject(BP_img, frame, radius, 0, -1, -1);
+    
+    WRK_DONE = false;
+    epsilon = 2;
+    while (~WRK_DONE)
+        % Create window
+        window = imcrop(frame, [(x - tx/2) (y - ty/2) tx ty]);
+        
+        % Back project onto window
+        BP_img = createbackprojectionimage(R_histo, window);
+        [cx, cy, pline_x, pline_y] = meanshift(BP_img, window, radius, 0, -1, -1);
+        
+        WRK_DONE = ((abs(x-cx) < epsilon) && (abs(y-cy) < epsilon)); 
+        x = cx;
+        y = cy;
+    end
+    
 
     figure(1),imshow(frame),hold on
     plot(x, y, 'x', 'LineWidth', 3)
