@@ -5,7 +5,7 @@ load('CMPT412_blackcup.mat');
 load('CMPT412_bluecup.mat');
 
 % TODO: choose what video
-video = bluecup;
+video = blackcup;
 
 % Get box input 
 frame1 = video(:,:,:,1);
