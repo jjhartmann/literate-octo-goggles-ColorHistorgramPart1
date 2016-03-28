@@ -34,8 +34,8 @@ for frame_index = 1:f
     frame = video(:,:,:,frame_index);  
     
     % Create window
-    bx = (x - tx/2);
-    by = (y - ty/2);
+    bx = max(0, (x - tx/2));
+    by = max(0, (y - ty/2));
         
     window = imcrop(frame, [bx by tx ty]);
     
@@ -63,6 +63,7 @@ for frame_index = 1:f
     %% Conduct Mean Shift
     WRK_DONE = false;
     epsilon = 1;
+    mean_window = ceil(radius);
     x_prime = ceil(x - abs(bx));
     y_prime = ceil(y - abs(by));
     figure(5), mesh(C_img)
@@ -72,9 +73,9 @@ for frame_index = 1:f
     while (~WRK_DONE)
         % Call mean shift function: pass in Backprojected window and
         % normalized x and y positions
-        x_prime = ceil(x - abs(bx));
-        y_prime = ceil(y - abs(by));
-        [deltax, deltay] = meanshift(C_crop, x_prime, y_prime);
+        x_prime = max(1, ceil(x - abs(bx)));
+        y_prime = max(1, ceil(y - abs(by)));
+        [deltax, deltay] = meanshift(C_crop, x_prime, y_prime, mean_window);
         
         WRK_DONE = ((abs(deltax) < epsilon) && (abs(deltay) < epsilon)); 
         x = ceil(x + deltax);
