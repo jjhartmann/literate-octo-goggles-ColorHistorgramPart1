@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% Swains et al. Color Histogram Part 1
 
-model_img = imread('SwainDatabase\swain_database\garan.sqr.128.bmp');
+model_img = imread('SwainDatabase/swain_database/garan.sqr.128.bmp');
 figure(1), imshow(model_img)
 
 model = double(model_img);
@@ -30,7 +30,7 @@ end
 
 %% Build Histogram for Image
 I_histo = zeros(8, 8, 8);
-image_img = imread('SwainDatabase\SwainCollageForBackprojectionTesting.bmp');
+image_img = imread('SwainDatabase/SwainCollageForBackprojectionTesting.bmp');
 figure(2), imshow(image_img)
 
 image = double(image_img);
